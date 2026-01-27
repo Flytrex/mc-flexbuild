@@ -6,7 +6,7 @@ RELEASE_TYPE:    "external"
 
 
 # default repo tag which can be overrided by specified tag
-DEFAULT_REPO_TAG: "lf-6.6.36-2.1.0"
+#DEFAULT_REPO_TAG: "lf-6.6.36-2.1.0"
 
 # default Debian version for target userland
 DEBIAN_CODENAME: "bookworm"
@@ -15,18 +15,19 @@ DEBIAN_VERSION:  "12"
 # default build options for CI auto build
 BUILD_DEBIAN_BASE: n
 BUILD_DEBIAN_SERVER: y
-BUILD_DEBIAN_DESKTOP: y
+BUILD_DEBIAN_DESKTOP: n
 BUILD_YOCTO_RFS: n
 BUILD_BUILDROOT_RFS: n
+BUILD_ISP_VVCAM_MODULE: n
 
 # enable/disable custom packagegroups
-PKG_GROUPS_GRAPHICS: y
-PKG_GROUPS_MULTIMEDIA: y
-PKG_GROUPS_NETWORKING: y
+PKG_GROUPS_GRAPHICS: n
+PKG_GROUPS_MULTIMEDIA: n
+PKG_GROUPS_NETWORKING: n
 PKG_GROUPS_CONNECTIVITY: y
-PKG_GROUPS_UTILS: y
-PKG_GROUPS_SECURITY: y
-PKG_GROUPS_ML: y
+PKG_GROUPS_UTILS: n
+PKG_GROUPS_SECURITY: n
+PKG_GROUPS_ML: n
 PKG_GROUPS_GOPOINT: n
 PKG_GROUPS_ROBOTICS: n
 
@@ -85,8 +86,8 @@ repo:
     commit: 1fd46eeb2c4f30e48ace97c8929033eabe6ac107
 
   uboot:
-    url:  https://github.com/varigit/uboot-imx.git
-    commit: 388cf1ea11d1136f46aa68b53e82d65b8e03aeba
+    url:  https://github.com/Flytrex/mc-uboot-imx.git
+    branch: lf_v2024.04_6.6.52-2.2.0_var01
 
   rcw:
     url:  https://github.com/nxp-qoriq/rcw.git
@@ -166,8 +167,8 @@ repo:
 
 # kernel and modules git repositories
   linux:
-    url:  https://github.com/varigit/linux-imx.git
-    commit: b1bff6c466755d4ffd904eaa5876952eba566161
+    url:  https://github.com/Flytrex/mc-linux-imx.git
+    branch: mc
 
   cryptodev_linux:
     url:  https://github.com/cryptodev-linux/cryptodev-linux.git
@@ -180,8 +181,8 @@ repo:
   mdio_proxy_module:
     url:  https://github.com/nxp-qoriq/mdio-proxy-module.git
 
-  isp_vvcam_module:
-    url:  https://github.com/nxp-imx/isp-vvcam.git
+  # isp_vvcam_module:
+  #   url:  https://github.com/nxp-imx/isp-vvcam.git
 
 
 # networking component repositories

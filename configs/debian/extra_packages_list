@@ -38,6 +38,9 @@ host_dependent_packages=" \
 extra_server_devel_packages=" \
     bc \
     iperf3 \
+    modemmanager \
+    wpa_supplicant \
+    wireless-tools \
     iw \
     libxml2-dev \
     libtinyxml2-9 \
