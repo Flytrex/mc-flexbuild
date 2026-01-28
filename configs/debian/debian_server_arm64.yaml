@@ -112,6 +112,7 @@ mmdebstrap:
     - 'mkdir -p $1/usr/local/bin $1/etc/udev/rules.d $1/etc/modprobe.d'
     - 'mkdir -p $1/etc/systemd/system/multi-user.target.wants'
     - 'mkdir -p $1/etc/systemd/system/local-fs.target.wants'
+    - 'mkdir -p $1/etc/mc/'
       # Setup var apt server(s)
     - 'mkdir -p $1/etc/apt/sources.list.d'
     - 'printf "deb [trusted=yes] https://varigit.github.io/var-debpkgs/var bookworm main\n" >> $1/etc/apt/sources.list.d/var.list'
@@ -147,6 +148,8 @@ mmdebstrap:
     - 'chroot "$1" ln -s /boot/tools/perf /usr/local/bin/perf'
     - 'chroot "$1" ln -s /sbin/init /init'
     - 'cp src/system/pm-utils/divert-sleep-scripts.sh $1/root/'
+    - 'cp src/system/utils/configure_usb.sh $1/etc/mc/'
+    - 'cp src/system/utils/configure_usb.service $1/etc/systemd/system/'
     - 'chroot "$1" chmod +x /root/divert-sleep-scripts.sh'
     - 'chroot "$1" /root/divert-sleep-scripts.sh'
     - 'rm $1/root/divert-sleep-scripts.sh'
