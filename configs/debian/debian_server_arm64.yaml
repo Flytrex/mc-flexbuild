@@ -107,6 +107,7 @@ mmdebstrap:
     - systemd-resolved
     - screen
     - python3-dbus
+    - dnsmasq
   setup-hooks:
       # Setup NXP board-specific configurations for various platforms
     - 'mkdir -p $1/usr/local/bin $1/etc/udev/rules.d $1/etc/modprobe.d'
@@ -137,6 +138,12 @@ mmdebstrap:
     - 'cp src/system/distroplatcfg $1/usr/bin/'
     - 'cp src/system/platcfg.service $1/lib/systemd/system/'
     - 'cp src/system/blacklist.conf $1/etc/modprobe.d/'
+    - 'cp src/system/utils/configure_usb.sh $1/etc/mc/'
+    - 'cp src/system/utils/configure_usb.service $1/lib/systemd/system/'
+    - 'cp src/system/utils/dnsmasq.conf $1/etc/'
+    - 'echo "DNSMASQ_OPTS=\"-p0\"" >> $1/etc/default/dnsmasq'
+    - 'chroot "$1" chmod 700 /etc/mc/configure_usb.sh'
+    - 'chroot "$1" chmod 600 /etc/dnsmasq.conf'
     - 'cp src/system/ts.conf $1/etc/'
     - 'chroot "$1" ln -s /lib/systemd/system/platcfg.service /etc/systemd/system/multi-user.target.wants/platcfg.service'
     # Enable systemd-networkd and related services in the chroot environment
@@ -145,11 +152,11 @@ mmdebstrap:
     - 'chroot "$1" ln -s /lib/systemd/system/systemd-networkd.service /etc/systemd/system/multi-user.target.wants/systemd-networkd.service'
     - 'chroot "$1" ln -s /lib/systemd/system/systemd-network-generator.service /etc/systemd/system/sysinit.target.wants/systemd-network-generator.service'
     - 'chroot "$1" ln -s /lib/systemd/system/systemd-networkd-wait-online.service /etc/systemd/system/network-online.target.wants/systemd-networkd-wait-online.service'
+    - 'chroot "$1" ln -s /lib/systemd/system/configure_usb.service /etc/systemd/system/multi-user.target.wants/configure_usb.service'
+    - 'chroot "$1" ln -sf /lib/systemd/system/dnsmasq.service /etc/systemd/system/multi-user.target.wants/dnsmasq.service'
     - 'chroot "$1" ln -s /boot/tools/perf /usr/local/bin/perf'
     - 'chroot "$1" ln -s /sbin/init /init'
     - 'cp src/system/pm-utils/divert-sleep-scripts.sh $1/root/'
-    - 'cp src/system/utils/configure_usb.sh $1/etc/mc/'
-    - 'cp src/system/utils/configure_usb.service $1/etc/systemd/system/'
     - 'chroot "$1" chmod +x /root/divert-sleep-scripts.sh'
     - 'chroot "$1" /root/divert-sleep-scripts.sh'
     - 'rm $1/root/divert-sleep-scripts.sh'

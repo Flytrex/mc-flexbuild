@@ -111,6 +111,9 @@ extra_server_devel_packages=" \
     libpulse-dev \
     libspeex-dev x264 \
     libtag1-dev \
+    modemmanager \
+    wpa_supplicant \
+    wireless-tools \
 "
 
 extra_desktop_devel_packages=" \
