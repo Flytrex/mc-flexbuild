@@ -112,7 +112,6 @@ extra_server_devel_packages=" \
     libspeex-dev x264 \
     libtag1-dev \
     modemmanager \
-    wpa_supplicant \
     wireless-tools \
 "
 

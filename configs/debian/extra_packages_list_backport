@@ -11,6 +11,8 @@ extra_server_devel_packages_backport=" \
     libgpiod-dev \
     python3-libgpiod \
     python3-venv \
+    libmbim-glib-dev \
+    modemmanager \
 "
 
 extra_desktop_devel_packages_backport=" \
