@@ -117,6 +117,8 @@ mmdebstrap:
     - udhcpd
     - unzip
     - network-manager
+    - libgpiod2
+    - gpiod
   setup-hooks:
       # Setup NXP board-specific configurations for various platforms
     - 'mkdir -p $1/usr/local/bin $1/etc/udev/rules.d $1/etc/modprobe.d'
@@ -131,6 +133,8 @@ mmdebstrap:
     - 'sleep 10'
   customize-hooks:
     - 'chroot "$1" useradd -m -d /home/debian -s /bin/bash debian'
+    - 'chroot "$1" useradd -m -s /bin/bash mc'
+    - 'chroot "$1" echo "mc:mc" | sudo chpasswd'
     - 'chroot "$1" gpasswd -a debian sudo'
     - 'chroot "$1" usermod -aG sudo debian'
     - 'chroot "$1" passwd --delete root'
@@ -185,6 +189,7 @@ mmdebstrap:
     - 'chroot "$1" rm -rf /usr/lib/pm-utils/sleep.d'
     - 'chroot "$1" ln -sf /bin/busybox /bin/usleep'
     - 'chroot "$1" ln -sf /usr/bin/busybox /usr/bin/devmem'
+    - 'chroot "$1" mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MANAGED.disabled'
     - 'printf "/usr/lib\n" >> $1/etc/ld.so.conf.d/01-sdk.conf'
     - 'printf " * Support:   https://www.nxp.com/support\n" >> $1/etc/update-motd.d/20-help-text'
     - 'printf " * Licensing: https://lsdk.github.io/eula\n" >> $1/etc/update-motd.d/20-help-text'

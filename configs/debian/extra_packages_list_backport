@@ -7,9 +7,6 @@
 # during build-time for NXP iMX & Layerscape MPU platforms.
 
 extra_server_devel_packages_backport=" \
-    gpiod \
-    libgpiod-dev \
-    python3-libgpiod \
     python3-venv \
     libmbim-glib-dev \
     modemmanager \
