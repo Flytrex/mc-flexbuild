@@ -126,6 +126,7 @@ mmdebstrap:
     - 'mkdir -p $1/etc/systemd/system/local-fs.target.wants'
     - 'mkdir -p $1/etc/mc/'
     - 'chmod -R 755 $1/etc/mc'
+    - 'touch $1/etc/mc/board_features'
       # Setup var apt server(s)
     - 'mkdir -p $1/etc/apt/sources.list.d'
     - 'printf "deb [trusted=yes] https://varigit.github.io/var-debpkgs/var bookworm main\n" >> $1/etc/apt/sources.list.d/var.list'
@@ -134,7 +135,9 @@ mmdebstrap:
   customize-hooks:
     - 'chroot "$1" useradd -m -d /home/debian -s /bin/bash debian'
     - 'chroot "$1" useradd -m -s /bin/bash mc'
-    - 'chroot "$1" echo "mc:mc" | sudo chpasswd'
+    - 'chroot "$1" bash -c "echo mc:mc | chpasswd"'
+    - 'chroot "$1" mkdir -p /home/mc/serials/altimeter'
+    - 'chroot "$1" chown -R mc:mc /home/mc/serials'
     - 'chroot "$1" gpasswd -a debian sudo'
     - 'chroot "$1" usermod -aG sudo debian'
     - 'chroot "$1" passwd --delete root'

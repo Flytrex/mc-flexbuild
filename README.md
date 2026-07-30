@@ -16,6 +16,7 @@ device (SD/eMMC card or USB/SATA disk) on target board or on host machine.
 __Initial Installation__
 - source setup.env
 - bld docker
+- source setup.env
 - bld host-dep
 - var_build_image imx8mm-var-dart debian:server "uboot linux"
 **estimated time : 1.5 hours**
@@ -23,7 +24,11 @@ __Initial Installation__
 __rebuild rfs__
 - sudo rm -rf build_lsdk2412/images/
 - sudo rm -rf components_lsdk2412/bookworm_server_arm64/
+- source setup.env
+- bld docker
+- source setup.env
 - bld clean-rfs -r debian:server
+- sudo chown -R $USER:$USER components_lsdk2412 / build_lsdk2412
 - bld rfs -r debian:server
 - var_build_image imx8mm-var-dart debian:server "uboot linux"
 **estimated time : 0.5 hours**

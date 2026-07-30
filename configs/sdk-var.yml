@@ -167,7 +167,7 @@ repo:
 # kernel and modules git repositories
   linux:
     url:  https://github.com/Flytrex/mc-linux-imx.git
-    commit: b433dac50e4778ab500baa2645b06d7234f9ba37
+    commit: 27d5360c9780f2f620a423dd58734cc87cc0c0b3
 
   cryptodev_linux:
     url:  https://github.com/cryptodev-linux/cryptodev-linux.git
