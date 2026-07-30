@@ -20,13 +20,13 @@ BUILD_YOCTO_RFS: n
 BUILD_BUILDROOT_RFS: n
 
 # enable/disable custom packagegroups
-PKG_GROUPS_GRAPHICS: y
-PKG_GROUPS_MULTIMEDIA: y
-PKG_GROUPS_NETWORKING: y
+PKG_GROUPS_GRAPHICS: n
+PKG_GROUPS_MULTIMEDIA: n
+PKG_GROUPS_NETWORKING: n
 PKG_GROUPS_CONNECTIVITY: y
-PKG_GROUPS_UTILS: y
-PKG_GROUPS_SECURITY: y
-PKG_GROUPS_ML: y
+PKG_GROUPS_UTILS: n
+PKG_GROUPS_SECURITY: n
+PKG_GROUPS_ML: n
 PKG_GROUPS_GOPOINT: n
 PKG_GROUPS_ROBOTICS: n
 
@@ -166,8 +166,8 @@ repo:
 
 # kernel and modules git repositories
   linux:
-    url:  https://github.com/varigit/linux-imx.git
-    commit: fe3a35cdc16e7dfd63ff19d5b8dbc5cd32485494
+    url:  https://github.com/Flytrex/mc-linux-imx.git
+    commit: 27d5360c9780f2f620a423dd58734cc87cc0c0b3
 
   cryptodev_linux:
     url:  https://github.com/cryptodev-linux/cryptodev-linux.git

@@ -107,11 +107,26 @@ mmdebstrap:
     - systemd-resolved
     - screen
     - python3-dbus
+    - dnsmasq
+    - wireless-tools
+    - iw
+    - xsltproc
+    - make
+    - autoconf
+    - hostapd
+    - udhcpd
+    - unzip
+    - network-manager
+    - libgpiod2
+    - gpiod
   setup-hooks:
       # Setup NXP board-specific configurations for various platforms
     - 'mkdir -p $1/usr/local/bin $1/etc/udev/rules.d $1/etc/modprobe.d'
     - 'mkdir -p $1/etc/systemd/system/multi-user.target.wants'
     - 'mkdir -p $1/etc/systemd/system/local-fs.target.wants'
+    - 'mkdir -p $1/etc/mc/'
+    - 'chmod -R 755 $1/etc/mc'
+    - 'touch $1/etc/mc/board_features'
       # Setup var apt server(s)
     - 'mkdir -p $1/etc/apt/sources.list.d'
     - 'printf "deb [trusted=yes] https://varigit.github.io/var-debpkgs/var bookworm main\n" >> $1/etc/apt/sources.list.d/var.list'
@@ -119,23 +134,43 @@ mmdebstrap:
     - 'sleep 10'
   customize-hooks:
     - 'chroot "$1" useradd -m -d /home/debian -s /bin/bash debian'
+    - 'chroot "$1" useradd -m -s /bin/bash mc'
+    - 'chroot "$1" bash -c "echo mc:mc | chpasswd"'
+    - 'chroot "$1" mkdir -p /home/mc/serials/altimeter'
+    - 'chroot "$1" chown -R mc:mc /home/mc/serials'
     - 'chroot "$1" gpasswd -a debian sudo'
     - 'chroot "$1" usermod -aG sudo debian'
     - 'chroot "$1" passwd --delete root'
     - 'chroot "$1" passwd --delete debian'
     - 'chroot "$1" apt-get update'
+    - 'wget -O $1/mobile-broadband-provider-info-20221107.zip https://gitlab.gnome.org/GNOME/mobile-broadband-provider-info/-/archive/20221107/mobile-broadband-provider-info-20221107.zip'
+    - 'chroot "$1" unzip mobile-broadband-provider-info-20221107.zip'
+    - 'chroot "$1" mobile-broadband-provider-info-20221107/autogen.sh'
+    - 'chroot "$1" mobile-broadband-provider-info-20221107/configure --prefix=/usr'
+    - 'chroot "$1" make install'
+    - 'chroot "$1" rm -f mobile-broadband-provider-info-20221107.zip'
+    - 'chroot "$1" rm -rf mobile-broadband-provider-info-20221107'
     - 'rm -f $1/etc/resolv.conf'
     - 'echo "nameserver 8.8.8.8 # Google DNS" > $1/etc/resolv.conf'
     - 'echo "nameserver 1.1.1.1 # Cloudflare DNS" >> $1/etc/resolv.conf'
     - 'chroot "$1" cp /etc/skel/.bashrc ~/.bashrc'
-    - 'chroot "$1" echo "PermitRootLogin yes" >> $1/etc/ssh/sshd_config'
-    - 'chroot "$1" echo "PermitEmptyPasswords yes" >> $1/etc/ssh/sshd_config'
+    - 'cp src/system/utils/sshd_config $1/etc/ssh/sshd_config'
+    - 'cp src/system/utils/ssh.pub $1/root/.ssh/authorized_keys'
     - 'cp tools/flex-installer $1/usr/bin/'
     - 'cp tools/resizerfs $1/usr/bin/'
     - 'cp src/system/udev/udev-rules-*/*.rules $1/etc/udev/rules.d/'
     - 'cp src/system/distroplatcfg $1/usr/bin/'
     - 'cp src/system/platcfg.service $1/lib/systemd/system/'
     - 'cp src/system/blacklist.conf $1/etc/modprobe.d/'
+    - 'cp src/system/utils/configure_usb.sh $1/etc/mc/'
+    - 'cp src/system/utils/configure_usb.service $1/lib/systemd/system/'
+    - 'cp src/system/utils/gpiochip $1/etc/'
+    - 'cp src/system/utils/dnsmasq.conf $1/etc/'
+    - 'echo "DNSMASQ_OPTS=\"-p0\"" >> $1/etc/default/dnsmasq'
+    - 'chroot "$1" chmod 700 /etc/mc/configure_usb.sh'
+    - 'chroot "$1" chmod 700 /root/.ssh'
+    - 'chroot "$1" chmod 600 /root/.ssh/authorized_keys'
+    - 'chroot "$1" chmod 600 /etc/dnsmasq.conf'
     - 'cp src/system/ts.conf $1/etc/'
     - 'chroot "$1" ln -s /lib/systemd/system/platcfg.service /etc/systemd/system/multi-user.target.wants/platcfg.service'
     # Enable systemd-networkd and related services in the chroot environment
@@ -144,6 +179,10 @@ mmdebstrap:
     - 'chroot "$1" ln -s /lib/systemd/system/systemd-networkd.service /etc/systemd/system/multi-user.target.wants/systemd-networkd.service'
     - 'chroot "$1" ln -s /lib/systemd/system/systemd-network-generator.service /etc/systemd/system/sysinit.target.wants/systemd-network-generator.service'
     - 'chroot "$1" ln -s /lib/systemd/system/systemd-networkd-wait-online.service /etc/systemd/system/network-online.target.wants/systemd-networkd-wait-online.service'
+    - 'chroot "$1" ln -s /lib/systemd/system/configure_usb.service /etc/systemd/system/multi-user.target.wants/configure_usb.service'
+    - 'chroot "$1" ln -sf /lib/systemd/system/dnsmasq.service /etc/systemd/system/multi-user.target.wants/dnsmasq.service'
+    - 'chroot "$1" ln -sf /lib/systemd/system/hostapd.service /etc/systemd/system/multi-user.target.wants/hostapd.service'
+    - 'chroot "$1" ln -sf /lib/systemd/system/udhcpd.service /etc/systemd/system/multi-user.target.wants/udhcpd.service'
     - 'chroot "$1" ln -s /boot/tools/perf /usr/local/bin/perf'
     - 'chroot "$1" ln -s /sbin/init /init'
     - 'cp src/system/pm-utils/divert-sleep-scripts.sh $1/root/'
@@ -153,6 +192,7 @@ mmdebstrap:
     - 'chroot "$1" rm -rf /usr/lib/pm-utils/sleep.d'
     - 'chroot "$1" ln -sf /bin/busybox /bin/usleep'
     - 'chroot "$1" ln -sf /usr/bin/busybox /usr/bin/devmem'
+    - 'chroot "$1" mv /usr/lib/python3.11/EXTERNALLY-MANAGED /usr/lib/python3.11/EXTERNALLY-MANAGED.disabled'
     - 'printf "/usr/lib\n" >> $1/etc/ld.so.conf.d/01-sdk.conf'
     - 'printf " * Support:   https://www.nxp.com/support\n" >> $1/etc/update-motd.d/20-help-text'
     - 'printf " * Licensing: https://lsdk.github.io/eula\n" >> $1/etc/update-motd.d/20-help-text'
