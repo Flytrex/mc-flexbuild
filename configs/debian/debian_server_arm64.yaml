@@ -119,6 +119,12 @@ mmdebstrap:
     - network-manager
     - libgpiod2
     - gpiod
+    - rsyslog
+    - logrotate
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    - docker-compose-plugin
   setup-hooks:
       # Setup NXP board-specific configurations for various platforms
     - 'mkdir -p $1/usr/local/bin $1/etc/udev/rules.d $1/etc/modprobe.d'
@@ -130,9 +136,15 @@ mmdebstrap:
       # Setup var apt server(s)
     - 'mkdir -p $1/etc/apt/sources.list.d'
     - 'printf "deb [trusted=yes] https://varigit.github.io/var-debpkgs/var bookworm main\n" >> $1/etc/apt/sources.list.d/var.list'
+      # Setup Docker CE apt server. mmdebstrap runs apt outside the rootfs, so during the build
+      # signed-by must reach the key through $1; a customize-hook strips the prefix for the target.
+    - 'mkdir -p $1/etc/apt/keyrings'
+    - 'wget -O $1/etc/apt/keyrings/docker.asc https://download.docker.com/linux/debian/gpg'
+    - 'printf "deb [arch=arm64 signed-by=$1/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian bookworm stable\n" > $1/etc/apt/sources.list.d/docker.list'
   essential-hooks:
     - 'sleep 10'
   customize-hooks:
+    - 'sed -i "s|signed-by=$1|signed-by=|" $1/etc/apt/sources.list.d/docker.list'
     - 'chroot "$1" useradd -m -d /home/debian -s /bin/bash debian'
     - 'chroot "$1" useradd -m -s /bin/bash mc'
     - 'chroot "$1" bash -c "echo mc:mc | chpasswd"'
