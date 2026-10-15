@@ -70,7 +70,7 @@ mmdebstrap:
     - 'chroot "$1" apt-get update'
     - 'chroot "$1" cp /etc/skel/.bashrc ~/.bashrc'
     - 'chroot "$1" echo "PermitRootLogin yes" >> $1/etc/ssh/sshd_config'
-    - 'chroot "$1" echo "PermitEmptyPasswords yes" >> $1/etc/ssh/sshd_config'
+    - 'chroot "$1" echo "PermitEmptyPasswords no" >> $1/etc/ssh/sshd_config'
     - 'chroot "$1" echo "127.0.0.1 localhost" >> $1/etc/hosts'
     - 'cp src/system/boot.mount $1/lib/systemd/system/'
     - 'cp src/system/debian-post-install-pkg $1/usr/bin/'

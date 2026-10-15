@@ -1,0 +1,10 @@
+
+[Unit]
+Description=Start USB configuration service
+
+[Service]
+Type=oneshot
+ExecStart=/etc/mc/configure_usb.sh
+
+[Install]
+WantedBy=multi-user.target
