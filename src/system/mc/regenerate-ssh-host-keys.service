@@ -1,0 +1,12 @@
+[Unit]
+Description=Generate the SSH host keys
+# The image ships without host keys, so each board makes its own on first boot.
+ConditionPathExistsGlob=!/etc/ssh/ssh_host_*_key
+Before=ssh.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/ssh-keygen -A
+
+[Install]
+WantedBy=multi-user.target
