@@ -15,7 +15,7 @@ SUBSYSTEM=="tty", KERNEL=="ttyACM*", ENV{ID_MM_DEVICE_IGNORE}="1"
 SUBSYSTEM=="tty", ATTRS{idVendor}=="04e2", ATTRS{idProduct}=="1414", ENV{ID_MM_DEVICE_IGNORE}="1"
 
 # Servo PWM: each of the four PWM blocks has one channel; export it so the services can drive it.
-# Name the two lock servos. udev links only device nodes, so the links into sysfs are made here.
+# Name the hook lock and net servos. udev links only device nodes, so the links into sysfs are made here.
 SUBSYSTEM=="pwm", ACTION=="add", KERNEL=="pwmchip*", RUN+="/bin/sh -c 'echo 0 > /sys%p/export'"
 SUBSYSTEM=="pwm", ACTION=="add", KERNEL=="pwmchip*", KERNELS=="30660000.pwm", RUN+="/bin/sh -c 'mkdir -p /dev/mc/pwm && ln -sfn /sys%p/pwm0 /dev/mc/pwm/hook-lock'"
-SUBSYSTEM=="pwm", ACTION=="add", KERNEL=="pwmchip*", KERNELS=="30670000.pwm", RUN+="/bin/sh -c 'mkdir -p /dev/mc/pwm && ln -sfn /sys%p/pwm0 /dev/mc/pwm/net-lock'"
+SUBSYSTEM=="pwm", ACTION=="add", KERNEL=="pwmchip*", KERNELS=="30670000.pwm", RUN+="/bin/sh -c 'mkdir -p /dev/mc/pwm && ln -sfn /sys%p/pwm0 /dev/mc/pwm/net'"
