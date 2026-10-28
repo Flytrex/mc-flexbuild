@@ -187,6 +187,11 @@ mmdebstrap:
     - 'cp src/system/mc/regenerate-ssh-host-keys.service $1/lib/systemd/system/'
     - 'chroot "$1" ln -s /lib/systemd/system/regenerate-ssh-host-keys.service /etc/systemd/system/multi-user.target.wants/regenerate-ssh-host-keys.service'
     - 'rm -f $1/etc/ssh/ssh_host_*'
+    # The image's root partition is smaller than the eMMC; Variscite's first-boot service grows it
+    # to the whole eMMC (its utils app group, which would install it, is not built).
+    - 'cp src/system/base-files/resize-rootfs-partition.sh $1/usr/bin/ && chmod 755 $1/usr/bin/resize-rootfs-partition.sh'
+    - 'cp src/system/base-files/resize-rootfs-partition.service $1/etc/systemd/system/'
+    - 'chroot "$1" ln -s /etc/systemd/system/resize-rootfs-partition.service /etc/systemd/system/multi-user.target.wants/resize-rootfs-partition.service'
     - 'chroot "$1" ln -s /lib/systemd/system/platcfg.service /etc/systemd/system/multi-user.target.wants/platcfg.service'
     # Enable systemd-networkd and related services in the chroot environment
     # to ensure network configuration and availability at boot.
