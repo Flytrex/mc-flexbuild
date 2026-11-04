@@ -13,6 +13,12 @@ device (SD/eMMC card or USB/SATA disk) on target board or on host machine.
 
 ## New MC Image Installation Guide
 --------------------
+__Clean build (recommended before full installation)__
+Delete the build output and the downloaded sources, then follow Initial Installation below.
+The build never updates a source it has already downloaded.
+- sudo rm -rf build_lsdk2412/
+- sudo rm -rf components_lsdk2412/
+
 __Initial Installation__
 - source setup.env
 - bld docker
