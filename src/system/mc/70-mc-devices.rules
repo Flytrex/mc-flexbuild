@@ -1,0 +1,21 @@
+# Fixed device names for the onboard-ng services on SKY II.
+
+# Serial ports, by the internal USB hub port they hang off: FTS on 1.1, FC on 1.2, and the Exar
+# XR21V1414 quad UART on 1.4 (channel 1 = eVESC, channel 3 = altimeter).
+SUBSYSTEM=="tty", KERNELS=="1-1.1:1.0", SYMLINK+="mc/serial/fts"
+SUBSYSTEM=="tty", KERNELS=="1-1.2:1.0", SYMLINK+="mc/serial/fc"
+SUBSYSTEM=="tty", KERNELS=="1-1.4:1.2", SYMLINK+="mc/serial/evesc"
+SUBSYSTEM=="tty", KERNELS=="1-1.4:1.6", SYMLINK+="mc/serial/altimeter"
+
+# ModemManager probes every new serial port with AT commands for ~30 s; keep it off the FC, the FTS
+# and the Exar UARTs. All ttyACM ports, not one USB ID: an FC or FTS rebooting into its bootloader
+# comes back under another ID, and a probe then swallows the bootloader's replies (firmware_updater's
+# erase times out). The modem itself is ttyUSB/cdc-wdm.
+SUBSYSTEM=="tty", KERNEL=="ttyACM*", ENV{ID_MM_DEVICE_IGNORE}="1"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="04e2", ATTRS{idProduct}=="1414", ENV{ID_MM_DEVICE_IGNORE}="1"
+
+# Servo PWM: each of the four PWM blocks has one channel; export it so the services can drive it.
+# Name the hook lock and net servos. udev links only device nodes, so the links into sysfs are made here.
+SUBSYSTEM=="pwm", ACTION=="add", KERNEL=="pwmchip*", RUN+="/bin/sh -c 'echo 0 > /sys%p/export'"
+SUBSYSTEM=="pwm", ACTION=="add", KERNEL=="pwmchip*", KERNELS=="30660000.pwm", RUN+="/bin/sh -c 'mkdir -p /dev/mc/pwm && ln -sfn /sys%p/pwm0 /dev/mc/pwm/hook-lock'"
+SUBSYSTEM=="pwm", ACTION=="add", KERNEL=="pwmchip*", KERNELS=="30670000.pwm", RUN+="/bin/sh -c 'mkdir -p /dev/mc/pwm && ln -sfn /sys%p/pwm0 /dev/mc/pwm/net'"

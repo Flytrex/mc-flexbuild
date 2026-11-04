@@ -1,0 +1,6 @@
+# The blue CAN bus: the MCP2518FD on SPI chip select 0.
+[Match]
+Path=platform-30820000.spi-cs-0
+
+[Link]
+Name=canblue
